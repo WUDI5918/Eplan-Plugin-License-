@@ -1,0 +1,273 @@
+<Window x:Class="IEplanPluginLicense.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IEplanPluginLicense"
+        mc:Ignorable="d"
+        Title="EPLAN 插件授权文件生成器" Height="620" Width="880"
+        WindowStartupLocation="CenterScreen" Background="#14141A"
+        Foreground="#EEEEEE" FontSize="14" ResizeMode="CanMinimize"
+        Icon="app.png">
+    
+    <Window.Resources>
+        <!-- Card Style -->
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background" Value="#1E1E26"/>
+            <Setter Property="BorderBrush" Value="#2D2D3B"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+
+        <!-- Modern Label Style -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#9E9EA7"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#121216"/>
+            <Setter Property="Foreground" Value="#EEEEEE"/>
+            <Setter Property="BorderBrush" Value="#2D2D3B"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" Value="#00ADB5"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="BorderBrush" Value="#00ADB5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="#00ADB5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="#00C4CC"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="#00959C"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="border" Property="Background" Value="#334E52"/>
+                                <Setter Property="Foreground" Value="#708A8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="#2D2D37"/>
+            <Setter Property="Foreground" Value="#EEEEEE"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" BorderBrush="#3D3D4E" BorderThickness="1" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="#3D3D4E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="#1E1E24"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Title Header -->
+            <RowDefinition Height="*"/>    <!-- Main Split Columns -->
+            <RowDefinition Height="Auto"/> <!-- Status Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- 1. HEADER SECTION -->
+        <Grid Grid.Row="0" Margin="5,0,5,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <Path Data="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" 
+                          Fill="#00ADB5" Width="22" Height="22" Stretch="Fill" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="EPLAN 插件授权文件生成器" Foreground="#EEEEEE" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="基于 RSA-2048 非对称加密与物理硬件指纹（一机一码）绑定，用于生成插件离线授权证书" Foreground="#6C7A89" FontSize="12.5" Margin="32,6,0,0"/>
+            </StackPanel>
+            
+            <Border Grid.Column="1" Background="#1D2A3A" BorderBrush="#00ADB5" BorderThickness="1" CornerRadius="4" Padding="10,6" VerticalAlignment="Center">
+                <TextBlock Text="正式发卡版 (开发者专用)" Foreground="#00ADB5" FontSize="12" FontWeight="SemiBold"/>
+            </Border>
+        </Grid>
+
+        <!-- 2. MAIN CONTENT SECTION (Two Columns) -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="420"/> <!-- Left Column: Keys -->
+                <ColumnDefinition Width="20"/>  <!-- Spacer -->
+                <ColumnDefinition Width="*"/>   <!-- Right Column: Issuing -->
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT COLUMN: RSA KEY MANAGEMENT -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Title -->
+                        <RowDefinition Height="*"/>    <!-- Key Textboxes -->
+                        <RowDefinition Height="Auto"/> <!-- Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <TextBlock Text="1. 密钥管理 (RSA-2048)" Foreground="#EEEEEE" FontSize="15" FontWeight="Bold"/>
+                        <TextBlock Text="私钥保存在发卡端，公钥需硬编码嵌入插件代码中" Foreground="#7A8B9E" FontSize="11.5" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Key inputs -->
+                    <Grid Grid.Row="1" Margin="0,0,0,15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Private Key -->
+                        <TextBlock Grid.Row="0" Text="私钥 XML (发卡专用，不可泄露)：" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="TxtDevPrivateKey" Grid.Row="1" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15" IsReadOnly="True"
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" FontSize="11" FontFamily="Consolas"/>
+
+                        <!-- Public Key -->
+                        <TextBlock Grid.Row="2" Text="公钥 XML (需硬编码嵌入插件中)：" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="TxtDevPublicKey" Grid.Row="3" Style="{StaticResource ModernTextBox}" IsReadOnly="True"
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" FontSize="11" FontFamily="Consolas"/>
+                    </Grid>
+
+                    <!-- Key Actions -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Button Grid.Row="0" Grid.Column="0" Content="生成全新密钥对" Style="{StaticResource PrimaryBtn}" Margin="0,0,5,8" Click="GenerateKeys_Click"/>
+                        <Button Grid.Row="0" Grid.Column="1" Content="复制当前公钥" Style="{StaticResource SecondaryBtn}" Margin="5,0,0,8" Click="CopyPublicKey_Click"/>
+                        <Button Grid.Row="1" Grid.Column="0" Content="从文件导入私钥" Style="{StaticResource SecondaryBtn}" Margin="0,0,5,0" Click="LoadKeysFromFile_Click"/>
+                        <Button Grid.Row="1" Grid.Column="1" Content="保存当前密钥对" Style="{StaticResource SecondaryBtn}" Margin="5,0,0,0" Click="SaveKeysToFile_Click"/>
+                        <Button x:Name="BtnUnlockKeys" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="🔓 解锁密钥编辑" Style="{StaticResource SecondaryBtn}" Margin="0,8,0,0" Click="UnlockKeys_Click"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- RIGHT COLUMN: LICENSE ISSUING -->
+            <Border Grid.Column="2" Style="{StaticResource CardBorder}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Title -->
+                        <RowDefinition Height="*"/>    <!-- Inputs Form -->
+                        <RowDefinition Height="Auto"/> <!-- Issue Button -->
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <TextBlock Text="2. 签发客户授权" Foreground="#EEEEEE" FontSize="15" FontWeight="Bold"/>
+                        <TextBlock Text="填写以下客户的机器硬件指纹及授权限制信息" Foreground="#7A8B9E" FontSize="11.5" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Inputs Form -->
+                    <StackPanel Grid.Row="1">
+                        <!-- Machine Code -->
+                        <TextBlock Text="目标电脑机器码：" Style="{StaticResource FieldLabel}"/>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtInputMachineCode" Grid.Column="0" Style="{StaticResource ModernTextBox}" 
+                                     FontFamily="Consolas" FontSize="13.5" Padding="10,8"/>
+                            <Button Grid.Column="1" Content="填入本机机器码" Style="{StaticResource SecondaryBtn}" Margin="8,0,0,0" Padding="12,6" Click="FillLocalMachineCode_Click"/>
+                        </Grid>
+
+                        <!-- User Name -->
+                        <TextBlock Text="授权用户名 / 单位名称：" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="TxtInputUser" Style="{StaticResource ModernTextBox}" Padding="10,8" Margin="0,0,0,20" Text="EPLAN 插件授权用户"/>
+
+                        <!-- Expire Date -->
+                        <TextBlock Text="授权到期时间至：" Style="{StaticResource FieldLabel}"/>
+                        <DatePicker x:Name="DpInputDate" Padding="5" Height="34" Margin="0,0,0,20" BorderBrush="#2D2D3B" Background="#121216"/>
+
+                        <!-- Helpful Info Alert Box -->
+                        <Border Background="#1A2222" BorderBrush="#008B92" BorderThickness="1" CornerRadius="6" Padding="12,10" Margin="0,10,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Grid.Column="0" Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" 
+                                      Fill="#00ADB5" Width="16" Height="16" Stretch="Fill" VerticalAlignment="Top" Margin="0,2,8,0"/>
+                                <TextBlock Grid.Column="1" Text="真实环境使用提示：在测试或发卡前，请确保此处的 RSA 私钥与您嵌入到 EPLAN 插件代码中的公钥是匹配的密钥对。默认已加载开发测试密钥对。" 
+                                           Foreground="#83B6B8" FontSize="11.5" TextWrapping="Wrap" LineHeight="16"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Issue Button -->
+                    <Button Grid.Row="2" Content="使用当前私钥加密签名并生成 license.lic 文件" Height="46" 
+                            Style="{StaticResource PrimaryBtn}" FontSize="14.5" Click="GenerateLicense_Click"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- 3. FOOTER SECTION -->
+        <Grid Grid.Row="2" Margin="5,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="技术标准: RSA-2048 非对称签名验签 + SHA-256 物理硬件指纹校验" Foreground="#4A5568" FontSize="11.5"/>
+            <TextBlock Grid.Column="1" Text="v1.0.0 (离线授权版)" Foreground="#4A5568" FontSize="11.5"/>
+        </Grid>
+    </Grid>
+</Window>
